@@ -1,6 +1,6 @@
 #include "gemm.h"
+
 using namespace std;
-using namespace sc_core;
 
 void gemm(int M, int N, int K,
         INTYPE *A, int lda,

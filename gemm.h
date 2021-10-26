@@ -1,4 +1,3 @@
-#include <systemc>
 #include <inttypes.h>
 
 #define INTYPE int16_t
