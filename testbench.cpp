@@ -2,14 +2,19 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <assert.h>
 #include "gemm.h"
+//#include <inttypes.h>
+
+//#define INTYPE int16_t
+//#define OUTTYPE int32_t
 
 using namespace std;
 
-INTYPE *A_ = NULL;
-INTYPE *B_ = NULL;
-OUTTYPE *C_ = NULL;
-OUTTYPE *C_golden = NULL;
+INTYPE A_[arr_sz];
+INTYPE B_[arr_sz];
+OUTTYPE C_[arr_sz];
+OUTTYPE C_golden[arr_sz];
 
 int Asize, Arow, Acol;
 int Bsize, Brow, Bcol;
@@ -18,7 +23,8 @@ int Csize, Crow, Ccol;
 //split line into values placed into vector
 //taken from: https://stackoverflow.com/questions/14265581/parse-split-a-string-in-c-using-string-delimiter-standard-c
 vector<string> split(string s, string delimiter);
-void clean_mem();
+//void clean_mem();
+//void gemm(int M, int N, int K, INTYPE *A, int lda, INTYPE *B, int ldb, OUTTYPE *C, int ldc);
 
 int main(int argc, char *argv[]){
     //check cmd line args
@@ -49,7 +55,8 @@ int main(int argc, char *argv[]){
 				curr_col = 0;
 				vector<string> v = split(line,delim);
 				Asize = stoi(v[0],NULL);
-				A_ = new INTYPE[Asize];
+				assert(Asize <= arr_sz);
+				//A_ = new INTYPE[Asize];
 				Arow = stoi(v[1],NULL);
 				Acol = stoi(v[2],NULL);
 			}else if(!FL && B){
@@ -58,7 +65,8 @@ int main(int argc, char *argv[]){
 				curr_col = 0;
 				vector<string> v = split(line,delim);
 				Bsize = stoi(v[0],NULL);
-				B_ = new INTYPE[Bsize];
+				assert(Bsize <= arr_sz);
+				//B_ = new INTYPE[Bsize];
 				Brow = stoi(v[1],NULL);
 				Bcol = stoi(v[2],NULL);
 			}else if(FL && !B){
@@ -93,18 +101,17 @@ int main(int argc, char *argv[]){
 				curr_col = 0;
 				vector<string> v = split(line,delim);
 				Csize = stoi(v[0],NULL);
+				assert(Csize <= arr_sz);
 				Crow = stoi(v[1],NULL);
 				Ccol = stoi(v[2],NULL);
 				if(Csize != Arow*Bcol){
 					cout << "Dimensions do not match!\n";
-					clean_mem();
-					delete A_;
-					delete B_;
+					//clean_mem();
 					inf.close();
 					exit(1);
 				}
-				C_golden = new OUTTYPE[Csize];
-				C_ = new OUTTYPE[Arow*Bcol];
+				//C_golden = new OUTTYPE[Csize];
+				//C_ = new OUTTYPE[Arow*Bcol];
 			}else{
 				vector<string> v = split(line,delim);	
 				curr_col = 0;
@@ -133,7 +140,7 @@ int main(int argc, char *argv[]){
 	}
 
     //return status/errors
-	clean_mem();
+	//clean_mem();
 	if (err){
 		cout << "Product does not match golden!\n";
 		exit(2);
@@ -159,6 +166,7 @@ vector<string> split(string s, string delimiter) {
     return res;
 }
 
+/*
 void clean_mem(){
 	if(A_ != NULL){
 		delete A_;
@@ -172,4 +180,15 @@ void clean_mem(){
 	if(C_golden != NULL){
 		delete C_golden;
 	}
-}
+}*/
+
+/*void gemm(int M, int N, int K, INTYPE *A, int lda, INTYPE *B, int ldb, OUTTYPE *C, int ldc){
+    for (int i = 0; i < M; ++i) {
+        for (int k = 0; k < K; ++k) {
+            OUTTYPE A_PART = A[i * lda + k];
+            for (int j = 0; j < N; ++j) {
+                C[i*ldc + j] += (A_PART*B[k*ldb + j]);// >> SHAMT;
+            }
+        }
+    }
+}*/
