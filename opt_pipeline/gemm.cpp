@@ -11,7 +11,7 @@ void gemm(const int M, const int N, const int K, const INTYPE A[512*512], const 
 			//#pragma HLS unroll factor=4
             OUTTYPE A_PART = A[i * lda + k];
             loopn: for (int j = 0; j < N; ++j) {
-				//#pragma HLS pipeline
+				#pragma HLS pipeline
 				//#pragma HLS unroll factor=8
                 C[i*ldc + j] += (A_PART*B[k*ldb + j]);// >> SHAMT;
 				//#pragma HLS latency min=1 max=1

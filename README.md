@@ -6,6 +6,8 @@ Testcases are generated using MATLAB to separate generation algorithm from our c
 # Usage
 Build the testbench using:
   g++ -std=c++11 -o testbench testbench.cpp gemm.cpp
+  or
+  source make.sh
 
 Usage of the testbench looks like:
   ./testbench testcase.txt golden.txt
